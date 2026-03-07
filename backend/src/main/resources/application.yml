@@ -5,17 +5,29 @@ spring:
   application:
     name: ExpenseMini Backend
   datasource:
-    url: jdbc:mysql://localhost:3306/expensemini_db?createDatabaseIfNotExist=true&useSSL=false
-    username: root
-    password: password # Replace with user's actual password
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://db.pcopyitvmqvgnnyeuvll.supabase.co:6543/postgres
+    username: postgres
+    password: G3ExpenseMiniYungco0711
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dummy@gmail.com
+    password: dummy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 app:
   jwt:
