@@ -73,9 +73,6 @@ const LoginPage = () => {
               <label htmlFor="password" className="block text-xs font-semibold text-gray-700">
                 Password
               </label>
-              <Link to="/forgot-password" className="text-xs font-medium text-[#2da57f] hover:text-[#238264] transition-colors">
-                Forgot password?
-              </Link>
             </div>
             <input
               id="password"
@@ -87,6 +84,11 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <div className="flex justify-end mt-2">
+              <Link to="/forgot-password" className="text-xs font-medium text-[#2da57f] hover:text-[#238264] transition-colors">
+                Forgot password?
+              </Link>
+            </div>
           </div>
 
           <button
