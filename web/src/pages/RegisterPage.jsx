@@ -8,6 +8,7 @@ const RegisterPage = () => {
         lastName: '',
         email: '',
         password: '',
+        confirmPassword: '',
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -24,6 +25,12 @@ const RegisterPage = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -130,6 +137,20 @@ const RegisterPage = () => {
                                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm mt-1"
                                 placeholder="Min. 6 characters"
                                 value={formData.password}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                            <input
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                type="password"
+                                required
+                                minLength={6}
+                                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm mt-1"
+                                placeholder="Confirm your password"
+                                value={formData.confirmPassword}
                                 onChange={handleChange}
                             />
                         </div>
