@@ -3,8 +3,8 @@
 ## Application Details
 - **Application Name:** ExpenseMini
 - **Domain:** Expense & Finance Tracker
-- **Course Section:** TBA
-- **Author:** TBA
+- **Course Section:** G3
+- **Author:** Riggy Yungco
 
 ## Repository Structure
 This repository contains the final implementation for IT342, following the strict required folder structure:
