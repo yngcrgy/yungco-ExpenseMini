@@ -1,58 +1,31 @@
-# IT342 Phase 1: User Registration and Login Summary
+# ExpenseMini: Phase 1 Short Explanation
 
-## User Registration
-**Registration fields used:**
-- First Name (`firstName`)
-- Last Name (`lastName`)
-- Email (`email`)
-- Password (`password`)
+### User Registration
+- **Registration Fields Used:** The system collects `firstName`, `lastName`, `email`, `password`, and a `confirmPassword` field to ensure accuracy during sign-up. 
+- **Validation Process:** On the frontend (React), the form verifies that the password array matches the `confirmPassword` field before submitting. The backend (Spring Boot) validates that the fields correspond to the correct data types and that the password is a minimum of 6 characters string.
+- **How Duplicate Accounts Are Prevented:** The `users` database table enforces a `UNIQUE` constraint on the `email` column. If a user attempts to register with an email that already exists, the Spring Boot backend catches the `DataIntegrityViolationException` and returns a `400 Bad Request` citing "Registration failed. Email might already be in use."
+- **How Passwords Are Stored Securely:** Passwords are never stored in plaintext. The Spring Boot backend uses `BCryptPasswordEncoder` (supplied by Spring Security) to salt and hash the password string before it is ever written to the database.
 
-**Validation process:**
-The system uses Spring Boot Validation to ensure all fields are properly formatted. The `AuthService` checks the incoming `RegisterRequest` DTO. If any fields are empty, or if constraints violate the basic requirements, the request is rejected with a `400 Bad Request` before creating the record.
+### User Login
+- **Login Credentials Used:** Users authenticate using their registered `email` and `password`.
+- **How the System Verifies Users:** The Spring Boot backend leverages an injected `AuthenticationManager` that compares the raw input password against the BCrypt-hashed password stored in the Supabase database. 
+- **What Happens After Successful Login:** Upon successful verification, the backend generates a signed JSON Web Token (JWT) containing the user's encoded identity. The frontend React application receives this JWT, stores it in `localStorage`, and instantly redirects the authenticated user to their secure Dashboard.
 
-**How duplicate accounts are prevented:**
-Within the `UserRepository`, the method `existsByEmail(email)` is called during registration. If the database already holds a record with the provided email, the system throws an exception ("Email already in use") preventing the account creation and responding with an error. The `email` column in the database is also marked as `UNIQUE`.
-
-**How passwords are stored securely:**
-Passwords are never stored in plain-text. Before saving the `User` entity to the database, the raw password string is encrypted using `BCryptPasswordEncoder`. This applies a one-way hashing algorithm with a salt, making the stored string undecipherable.
-
----
-
-## User Login
-**Login credentials used:**
-- Email
-- Password
-
-**How the system verifies users:**
-When a login request is received, the `AuthenticationManager` intercepts it and passes the credentials to the `DaoAuthenticationProvider`. This provider loads the User from the database using the provided email. The `BCryptPasswordEncoder` then verifies if the raw password provided matches the hashed password stored in the database. 
-
-**What happens after successful login:**
-If the credentials are valid, the `JwtService` generates a secure JSON Web Token (JWT) signed with an HMAC key. The system returns this token (along with user details) to the client. The client stores this JWT and the user is redirected to the protected System Dashboard. All subsequent requests to protected API endpoints will use the `Authorization: Bearer <TOKEN>` header.
-
----
-
-## Database Table
-The system uses a table named `users` to store all registered accounts.
+### Database Table
+The PostgreSQL database (hosted on Supabase) stores user entities in the `users` table.
 
 **Table:** `users`
-
-**Columns:**
-- `id` (BIGINT, Primary Key, Auto-Increment)
+**Columns:** 
+- `id` (Primary Key, Auto-incremented)
 - `first_name` (VARCHAR)
 - `last_name` (VARCHAR)
-- `email` (VARCHAR, Unique, Not Null)
-- `password` (VARCHAR, Encrypted BCrypt hash)
-- `role` (VARCHAR, e.g., 'ADMIN' or 'USER')
-- `provider` (VARCHAR, e.g., 'LOCAL' or 'GOOGLE')
+- `email` (VARCHAR, UNIQUE)
+- `password` (VARCHAR, BCrypt Hashed)
+- `role` (VARCHAR, Defaults to USER)
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
 
----
-
-## API Endpoints
-**Registration:**
-`POST /api/auth/register` (Accepts JSON body: firstName, lastName, email, password)
-
-**Login:**
-`POST /api/auth/login` (Accepts JSON body: email, password)
-
-**Profile / Current User (Protected):**
-`GET /api/auth/me` (Requires JWT Bearer Token, returns authenticated user details)
+### API Endpoints
+The Phase 1 backend exposes the following REST API endpoints:
+- `POST /api/auth/register` - Accepts a `RegisterRequest` JSON payload and writes a new user to the database.
+- `POST /api/auth/login` - Accepts an `AuthRequest` JSON payload and returns a `AuthResponse` containing the JWT token.
