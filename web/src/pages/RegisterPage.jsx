@@ -34,7 +34,7 @@ const RegisterPage = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/register', formData);
+            await axios.post('http://localhost:8080/api/auth/register', formData);
             setSuccess(true);
             setTimeout(() => {
                 navigate('/login');
@@ -48,124 +48,140 @@ const RegisterPage = () => {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg border border-green-200 text-center">
-                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-                        <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="min-h-screen flex items-center justify-center bg-[#f8f9fa] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+                <div className="w-full max-w-[420px] bg-white p-8 rounded-2xl shadow-sm border border-[#2da57f] text-center">
+                    <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-[#e8f5f0] mb-4">
+                        <svg className="h-7 w-7 text-[#2da57f]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                         </svg>
                     </div>
-                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Registration Successful!</h2>
-                    <p className="mt-2 text-sm text-gray-600">Redirecting you to login...</p>
+                    <h2 className="text-xl font-bold text-gray-900">Account Created!</h2>
+                    <p className="mt-2 text-sm text-gray-500">Redirecting you to login...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg border border-gray-100">
-                <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Create an Account
-                    </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
-                        Already have an account?{' '}
-                        <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                            Sign in Instead
-                        </Link>
-                    </p>
+        <div className="min-h-screen flex items-center justify-center bg-[#f8f9fa] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+            <div className="w-full max-w-[420px] bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+
+                {/* Logo and Header */}
+                <div className="flex flex-col items-center mb-8">
+                    <div className="bg-[#2da57f] p-3 rounded-xl mb-4 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="w-6 h-6 text-white">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+                        </svg>
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900">Create Account</h2>
+                    <p className="text-sm text-gray-500 mt-1">Start tracking your expenses today</p>
                 </div>
 
-                <form className="mt-8 space-y-6" onSubmit={handleRegister}>
+                <form className="space-y-5" onSubmit={handleRegister}>
                     {error && (
-                        <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm text-center">
+                        <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm text-center border border-red-100">
                             {error}
                         </div>
                     )}
 
-                    <div className="rounded-md shadow-sm space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
-                                <input
-                                    id="firstName"
-                                    name="firstName"
-                                    type="text"
-                                    required
-                                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm mt-1"
-                                    placeholder="John"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
-                                <input
-                                    id="lastName"
-                                    name="lastName"
-                                    type="text"
-                                    required
-                                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm mt-1"
-                                    placeholder="Doe"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                    <div>
+                        <label htmlFor="email" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                            Email
+                        </label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            required
+                            className="appearance-none block w-full px-3 py-2.5 bg-[#f8fafa] border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#2da57f] focus:border-[#2da57f] transition-colors"
+                            placeholder="you@email.com"
+                            value={formData.email}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">Email address</label>
+                            <label htmlFor="firstName" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                First Name
+                            </label>
                             <input
-                                id="email-address"
-                                name="email"
-                                type="email"
+                                id="firstName"
+                                name="firstName"
+                                type="text"
                                 required
-                                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm mt-1"
-                                placeholder="john@example.com"
-                                value={formData.email}
+                                className="appearance-none block w-full px-3 py-2.5 bg-[#f8fafa] border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#2da57f] focus:border-[#2da57f] transition-colors"
+                                placeholder="John"
+                                value={formData.firstName}
                                 onChange={handleChange}
                             />
                         </div>
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                            <label htmlFor="lastName" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                                Last Name
+                            </label>
                             <input
-                                id="password"
-                                name="password"
-                                type="password"
+                                id="lastName"
+                                name="lastName"
+                                type="text"
                                 required
-                                minLength={6}
-                                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm mt-1"
-                                placeholder="Min. 6 characters"
-                                value={formData.password}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
-                            <input
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                type="password"
-                                required
-                                minLength={6}
-                                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm mt-1"
-                                placeholder="Confirm your password"
-                                value={formData.confirmPassword}
+                                className="appearance-none block w-full px-3 py-2.5 bg-[#f8fafa] border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#2da57f] focus:border-[#2da57f] transition-colors"
+                                placeholder="Doe"
+                                value={formData.lastName}
                                 onChange={handleChange}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
-                        >
-                            {loading ? 'Registering...' : 'Register'}
-                        </button>
+                        <label htmlFor="password" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            required
+                            minLength={6}
+                            className="appearance-none block w-full px-3 py-2.5 bg-[#f8fafa] border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#2da57f] focus:border-[#2da57f] transition-colors"
+                            placeholder="Min 6 characters"
+                            value={formData.password}
+                            onChange={handleChange}
+                        />
                     </div>
+
+                    <div>
+                        <label htmlFor="confirmPassword" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                            Confirm Password
+                        </label>
+                        <input
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type="password"
+                            required
+                            minLength={6}
+                            className="appearance-none block w-full px-3 py-2.5 bg-[#f8fafa] border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#2da57f] focus:border-[#2da57f] transition-colors"
+                            placeholder="Re-enter password"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-[#2da57f] hover:bg-[#238264] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2da57f] transition-colors disabled:opacity-70 mt-6"
+                    >
+                        {loading ? 'Creating...' : 'Create Account'}
+                    </button>
                 </form>
+
+                <p className="mt-6 text-center text-xs text-gray-500">
+                    Already have an account?{' '}
+                    <Link to="/login" className="font-semibold text-[#2da57f] hover:text-[#238264] transition-colors">
+                        Sign in
+                    </Link>
+                </p>
             </div>
         </div>
     );
