@@ -25,6 +25,7 @@
         </activity>
 
         <activity android:name=".ui.RegisterActivity" />
+        <activity android:name=".ui.DashboardActivity" />
     </application>
 
 </manifest>

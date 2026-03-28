@@ -1,5 +1,6 @@
 package edu.cit.yungco.expensemini.ui
 
+import android.util.Log
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -55,11 +56,12 @@ class LoginActivity : AppCompatActivity() {
 
                         if (response.isSuccessful && response.body() != null) {
                             val authResponse = response.body()!!
-                            // We have the JWT token inside authResponse.token
                             Toast.makeText(this@LoginActivity, "Welcome ${authResponse.firstName}!", Toast.LENGTH_LONG).show()
                             
-                            // ToDo: Save the JWT Token
-                            // ToDo: Navigate to Dashboard
+                            val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
                         } else {
                             Toast.makeText(this@LoginActivity, "Invalid Credentials", Toast.LENGTH_SHORT).show()
                         }
@@ -68,6 +70,7 @@ class LoginActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         btnLogin.isEnabled = true
                         btnLogin.text = "Login"
+                        Log.e("LoginActivity", "Login Network Error", e)
                         Toast.makeText(this@LoginActivity, "Network Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }

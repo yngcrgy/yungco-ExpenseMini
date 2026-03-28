@@ -1,5 +1,6 @@
 package edu.cit.yungco.expensemini.ui
 
+import android.util.Log
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -79,6 +80,7 @@ class RegisterActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         btnRegister.isEnabled = true
                         btnRegister.text = "Create Account"
+                        Log.e("RegisterActivity", "Network/Parse Error", e)
                         Toast.makeText(this@RegisterActivity, "Network Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
