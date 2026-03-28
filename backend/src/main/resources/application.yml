@@ -5,8 +5,8 @@ spring:
   application:
     name: ExpenseMini Backend
   datasource:
-    url: jdbc:postgresql://db.pcopyitvmqvgnnyeuvll.supabase.co:6543/postgres
-    username: postgres
+    url: jdbc:postgresql://aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres
+    username: postgres.pcopyitvmqvgnnyeuvll
     password: G3ExpenseMiniYungco0711
     driver-class-name: org.postgresql.Driver
   jpa:
