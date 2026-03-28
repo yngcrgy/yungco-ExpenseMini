@@ -1,4 +1,4 @@
-# ExpenseMini: Phase 1 Short Explanation
+# ExpenseMini: Phase 1
 
 ### User Registration
 - **Registration Fields Used:** The system collects `firstName`, `lastName`, `email`, `password`, and a `confirmPassword` field to ensure accuracy during sign-up. 
