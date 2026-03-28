@@ -28,9 +28,9 @@ class RegisterActivity : AppCompatActivity() {
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
         
         val btnRegister = findViewById<Button>(R.id.btnRegister)
-        val tvSignIn = findViewById<TextView>(R.id.tvSignIn)
+        val llSignIn = findViewById<android.widget.LinearLayout>(R.id.llSignIn)
 
-        tvSignIn.setOnClickListener {
+        llSignIn.setOnClickListener {
             finish() // Close RegisterActivity and return to LoginActivity
         }
 
