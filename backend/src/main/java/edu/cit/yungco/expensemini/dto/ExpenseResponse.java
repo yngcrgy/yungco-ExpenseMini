@@ -1,24 +1,19 @@
 package edu.cit.yungco.expensemini.dto;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class ExpenseResponse {
-    private Long id;
+    @JsonProperty("expense_id")
+    private Long expenseId;
+    private String title;
     private BigDecimal amount;
-    private String description;
-    private LocalDate date;
-    private String receiptUrl;
-    private Long categoryId;
-    private String categoryName;
-    private Long userId;
+    private String category;
+    @JsonProperty("expense_date")
+    private LocalDate expenseDate;
 }

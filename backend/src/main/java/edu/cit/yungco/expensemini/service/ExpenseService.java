@@ -2,13 +2,12 @@ package edu.cit.yungco.expensemini.service;
 
 import edu.cit.yungco.expensemini.dto.ExpenseRequest;
 import edu.cit.yungco.expensemini.dto.ExpenseResponse;
-import edu.cit.yungco.expensemini.model.Category;
 import edu.cit.yungco.expensemini.model.Expense;
-import edu.cit.yungco.expensemini.model.Role;
 import edu.cit.yungco.expensemini.model.User;
-import edu.cit.yungco.expensemini.repository.CategoryRepository;
 import edu.cit.yungco.expensemini.repository.ExpenseRepository;
+import edu.cit.yungco.expensemini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,86 +18,72 @@ import java.util.stream.Collectors;
 public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
-    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
-    public ExpenseResponse createExpense(ExpenseRequest request, User user) {
-        Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+    private User getAuthenticatedUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
+    private Long getCategoryIdValue(Integer reqCatId, String reqCat) {
+        if (reqCatId != null && reqCatId != 0)
+            return reqCatId.longValue();
+        if ("Food".equalsIgnoreCase(reqCat))
+            return 1L;
+        if ("Transport".equalsIgnoreCase(reqCat))
+            return 2L;
+        if ("School".equalsIgnoreCase(reqCat))
+            return 3L;
+        if ("Personal".equalsIgnoreCase(reqCat))
+            return 4L;
+        return 5L; // Other
+    }
+
+    public ExpenseResponse createExpense(ExpenseRequest request) {
+        User user = getAuthenticatedUser();
         Expense expense = Expense.builder()
-                .amount(request.getAmount())
-                .description(request.getDescription())
-                .date(request.getDate())
-                .category(category)
                 .user(user)
+                .title(request.getTitle())
+                .amount(request.getAmount())
+                .dbCategoryId(getCategoryIdValue(request.getCategoryId(), request.getCategory()))
+                .expenseDate(request.getExpenseDate())
+                .notes(request.getNotes())
                 .build();
 
         expense = expenseRepository.save(expense);
         return mapToResponse(expense);
     }
 
-    public List<ExpenseResponse> getAllExpenses(User user) {
-        List<Expense> expenses;
-        if (user.getRole() == Role.ADMIN) {
-            expenses = expenseRepository.findAll();
-        } else {
-            expenses = expenseRepository.findByUserId(user.getId());
-        }
-        return expenses.stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<ExpenseResponse> getAllExpenses() {
+        User user = getAuthenticatedUser();
+        return expenseRepository.findByUserIdOrderByExpenseDateDesc(user.getId())
+                .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
-    public ExpenseResponse getExpenseById(Long id, User user) {
-        Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
-
-        if (user.getRole() != Role.ADMIN && !expense.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Unauthorized to view this expense");
-        }
-
-        return mapToResponse(expense);
-    }
-
-    public ExpenseResponse updateExpense(Long id, ExpenseRequest request, User user) {
-        Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
-
-        if (user.getRole() != Role.ADMIN && !expense.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Unauthorized to update this expense");
-        }
-
-        Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-
+    public ExpenseResponse updateExpense(Long id, ExpenseRequest request) {
+        Expense expense = expenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Expense not found"));
+        expense.setTitle(request.getTitle());
         expense.setAmount(request.getAmount());
-        expense.setDescription(request.getDescription());
-        expense.setDate(request.getDate());
-        expense.setCategory(category);
+        expense.setDbCategoryId(getCategoryIdValue(request.getCategoryId(), request.getCategory()));
+        if (request.getExpenseDate() != null)
+            expense.setExpenseDate(request.getExpenseDate());
+        if (request.getNotes() != null)
+            expense.setNotes(request.getNotes());
 
-        expense = expenseRepository.save(expense);
-        return mapToResponse(expense);
+        return mapToResponse(expenseRepository.save(expense));
     }
 
-    public void deleteExpense(Long id, User user) {
-        Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
-
-        if (user.getRole() != Role.ADMIN && !expense.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Unauthorized to delete this expense");
-        }
-
-        expenseRepository.delete(expense);
+    public void deleteExpense(Long id) {
+        expenseRepository.deleteById(id);
     }
 
-    private ExpenseResponse mapToResponse(Expense expense) {
+    private ExpenseResponse mapToResponse(Expense e) {
         return ExpenseResponse.builder()
-                .id(expense.getId())
-                .amount(expense.getAmount())
-                .description(expense.getDescription())
-                .date(expense.getDate())
-                .receiptUrl(expense.getReceiptUrl())
-                .categoryId(expense.getCategory().getId())
-                .categoryName(expense.getCategory().getName())
-                .userId(expense.getUser().getId())
+                .expenseId(e.getId())
+                .title(e.getTitle())
+                .amount(e.getAmount())
+                .category(e.getCategoryString())
+                .expenseDate(e.getExpenseDate())
                 .build();
     }
 }

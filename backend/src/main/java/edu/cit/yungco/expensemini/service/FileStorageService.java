@@ -26,7 +26,7 @@ public class FileStorageService {
     private String uploadDir;
 
     private final ExpenseRepository expenseRepository;
-    private final NotificationService notificationService;
+    // private final NotificationService notificationService;
 
     public void init() {
         try {
@@ -66,8 +66,8 @@ public class FileStorageService {
             expenseRepository.save(expense);
 
             // Trigger web socket notification
-            notificationService.sendNotification(user,
-                    "Receipt uploaded successfully for expense: " + expense.getDescription());
+            // notificationService.sendNotification(user,
+            // "Receipt uploaded successfully for expense: " + expense.getDescription());
 
             return fileUrl;
         } catch (Exception e) {

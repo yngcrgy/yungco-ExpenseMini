@@ -25,6 +25,6 @@ public class Category {
 
     private String description;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Expense> expenses;
+    // @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    // private List<Expense> expenses;
 }
