@@ -50,9 +50,11 @@ public class AuthService {
 
                 return AuthResponse.builder()
                                 .token(jwtToken)
+                                .id(user.getId())
                                 .email(user.getEmail())
                                 .firstName(user.getFirstName())
-                                .role(user.getRole())
+                                .lastName(user.getLastName())
+                                .role(user.getRole().name())
                                 .build();
         }
 
@@ -68,9 +70,11 @@ public class AuthService {
 
                 return AuthResponse.builder()
                                 .token(jwtToken)
+                                .id(user.getId())
                                 .email(user.getEmail())
                                 .firstName(user.getFirstName())
-                                .role(user.getRole())
+                                .lastName(user.getLastName())
+                                .role(user.getRole().name())
                                 .build();
         }
 }

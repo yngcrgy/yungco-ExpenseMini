@@ -2,9 +2,36 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary_teal">#2DA57F</color>
-    <color name="background_gray">#F9F9F9</color>
-    <color name="card_stroke">#E0E0E0</color>
-    <color name="text_dark">#1A1A1A</color>
-    <color name="text_muted">#7A7A7A</color>
+
+    <!-- Design System -->
+    <color name="primary">#2F9E73</color>
+    <color name="primary_dark">#257A59</color>
+    <color name="primary_light">#E8F5EF</color>
+    <color name="secondary">#6B7280</color>
+    <color name="warning">#EF4444</color>
+    <color name="warning_light">#FEE2E2</color>
+    <color name="background">#F9FAFB</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_muted">#9CA3AF</color>
+    <color name="divider">#E5E7EB</color>
+    <color name="card_stroke">#E5E7EB</color>
+    <color name="input_bg">#F3F4F6</color>
+
+    <!-- Chart Colors -->
+    <color name="chart_1">#2F9E73</color>
+    <color name="chart_2">#F59E0B</color>
+    <color name="chart_3">#3B82F6</color>
+    <color name="chart_4">#EF4444</color>
+    <color name="chart_5">#8B5CF6</color>
+
+    <!-- Legacy compatibility -->
+    <color name="primary_teal">#2F9E73</color>
+    <color name="background_gray">#F9FAFB</color>
+    <color name="text_dark">#1F2937</color>
+
+    <!-- Bottom Nav -->
+    <color name="nav_inactive">#9CA3AF</color>
+    <color name="nav_active">#2F9E73</color>
 </resources>

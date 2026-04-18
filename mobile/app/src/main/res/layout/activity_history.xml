@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:paddingTop="48dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Title Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="History"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+
+            <Button
+                android:id="@+id/btnExport"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="⬇ Export"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:textAllCaps="false"
+                android:background="@drawable/bg_stat_card"
+                android:paddingHorizontal="12dp" />
+        </LinearLayout>
+
+        <!-- Search & Filter Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input_rounded"
+                android:paddingHorizontal="16dp"
+                android:hint="🔍 Search..."
+                android:textSize="14sp"
+                android:inputType="text"
+                android:layout_marginEnd="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerFilter"
+                android:layout_width="110dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_input_rounded"
+                android:paddingHorizontal="8dp" />
+        </LinearLayout>
+
+        <!-- Count -->
+        <TextView
+            android:id="@+id/tvExpenseCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 expenses"
+            android:textSize="13sp"
+            android:textColor="@color/text_muted"
+            android:layout_marginTop="12dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvExpenses"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/card_bg"
+        app:menu="@menu/menu_bottom_nav"
+        app:itemIconTint="@color/nav_inactive"
+        app:itemTextColor="@color/nav_inactive"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
