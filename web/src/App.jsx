@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import Dashboard from './pages/Dashboard';
-import AddExpense from './pages/AddExpense';
-import History from './pages/History';
-import Profile from './pages/Profile';
+import LoginPage from './features/auth/LoginPage';
+import RegisterPage from './features/auth/RegisterPage';
+import Dashboard from './features/dashboard/Dashboard';
+import AddExpense from './features/expenses/AddExpense';
+import History from './features/expenses/History';
+import Profile from './features/profile/Profile';
 import Layout from './components/Layout';
 import { Toaster } from 'react-hot-toast';
 

@@ -16,7 +16,7 @@
         android:theme="@style/Theme.ExpenseMini"
         tools:targetApi="31">
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".features.auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +24,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.RegisterActivity" />
-        <activity android:name=".ui.DashboardActivity" />
-        <activity android:name=".ui.AddExpenseActivity" />
-        <activity android:name=".ui.HistoryActivity" />
-        <activity android:name=".ui.ProfileActivity" />
+        <activity android:name=".features.auth.RegisterActivity" />
+        <activity android:name=".features.dashboard.DashboardActivity" />
+        <activity android:name=".features.expenses.AddExpenseActivity" />
+        <activity android:name=".features.expenses.HistoryActivity" />
+        <activity android:name=".features.profile.ProfileActivity" />
     </application>
 
 </manifest>
