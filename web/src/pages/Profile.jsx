@@ -18,7 +18,7 @@ const Profile = () => {
                 budget_limit: parseFloat(budget)
             });
             toast.success('Budget limit correctly applied!');
-        } catch (err) {
+        } catch {
             toast.error('Failed to set budget');
         }
     };

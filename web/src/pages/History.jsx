@@ -17,7 +17,7 @@ const History = () => {
             const res = await api.get('/expenses');
             setExpenses(res.data.data);
             setFiltered(res.data.data);
-        } catch (e) {
+        } catch {
             toast.error('Failed to load history');
         } finally {
             setLoading(false);
@@ -41,7 +41,7 @@ const History = () => {
             await api.delete(`/expenses/${id}`);
             toast.success('Expense deleted');
             fetchExpenses();
-        } catch (e) {
+        } catch {
             toast.error('Failed to delete expense');
         }
     };
@@ -58,7 +58,7 @@ const History = () => {
             toast.success('Expense updated');
             setEditing(null);
             fetchExpenses();
-        } catch (err) {
+        } catch {
             toast.error('Failed to update expense');
         }
     };

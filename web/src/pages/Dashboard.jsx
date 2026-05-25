@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
     const [summary, setSummary] = useState(null);
+    const [expenses, setExpenses] = useState([]);
     const [recent, setRecent] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -19,8 +20,10 @@ const Dashboard = () => {
                 api.get('/expenses')
             ]);
             setSummary(sumRes.data.data);
-            setRecent(expRes.data.data.slice(0, 5)); // First 5
-        } catch (e) {
+            const allExpenses = expRes.data.data.sort((a, b) => b.expense_id - a.expense_id);
+            setExpenses(allExpenses);
+            setRecent(allExpenses.slice(0, 10)); // First 10
+        } catch {
             toast.error('Failed to load dashboard data');
         } finally {
             setLoading(false);
@@ -48,7 +51,7 @@ const Dashboard = () => {
             });
             toast.success(`Added ${title} (₱${amount})`);
             fetchDashboard();
-        } catch (e) {
+        } catch {
             toast.error('Quick add failed');
         }
     };
@@ -62,9 +65,9 @@ const Dashboard = () => {
 
     // Dynamic Chart Data based on actual expenses
     const categoryMap = {};
-    recent.forEach(exp => {
+    expenses.forEach(exp => {
         const c = exp.category || 'Other';
-        categoryMap[c] = (categoryMap[c] || 0) + exp.amount;
+        categoryMap[c] = (categoryMap[c] || 0) + parseFloat(exp.amount);
     });
     const pieData = Object.keys(categoryMap).map(k => ({ name: k, value: categoryMap[k] }));
     if (pieData.length === 0) pieData.push({ name: 'None', value: 1, color: '#e5e7eb' });
@@ -131,7 +134,7 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-white p-5 rounded-2xl border border-gray-100 flex flex-col items-center justify-center shadow-sm">
                     <p className="text-gray-400 text-sm mb-1 font-medium">Highest</p>
-                    <p className="font-bold text-xl text-gray-800">₱{recent.length ? Math.max(...recent.map(e => e.amount)) : 0}</p>
+                    <p className="font-bold text-xl text-gray-800">₱{expenses.length ? Math.max(...expenses.map(e => parseFloat(e.amount))) : 0}</p>
                 </div>
                 <div className="bg-white p-5 rounded-2xl border border-gray-100 flex flex-col items-center justify-center shadow-sm">
                     <p className="text-gray-400 text-sm mb-1 font-medium">Top</p>

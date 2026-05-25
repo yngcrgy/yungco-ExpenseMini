@@ -28,8 +28,26 @@ spring:
           auth: true
           starttls:
             enable: true
+  
+google:
+  client:
+    id: 60613662735-udtg9qq0dvbbspelct8vttq3n0qqfvqa.apps.googleusercontent.com
 
 app:
   jwt:
     secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
     expiration-ms: 86400000 # 24 Hours
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your.real.email@gmail.com
+    password: your-16-character-app-password-here
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  

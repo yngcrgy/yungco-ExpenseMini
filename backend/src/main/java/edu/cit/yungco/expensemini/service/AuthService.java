@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,5 +77,28 @@ public class AuthService {
                                 .lastName(user.getLastName())
                                 .role(user.getRole().name())
                                 .build();
+        }
+
+        public void processForgotPassword(String email) {
+                // 1. Check if the user exists
+                Optional<User> userOptional = repository.findByEmail(email);
+
+                if (userOptional.isPresent()) {
+                        User user = userOptional.get();
+
+                        // 2. Generate a secure reset token (you'd normally save this to the DB)
+                        // String resetToken = UUID.randomUUID().toString();
+                        // createPasswordResetTokenForUser(user, resetToken);
+
+                        // 3. Send the email (Requires an EmailService)
+                        // String resetUrl = "http://localhost:5173/reset-password?token=" + resetToken;
+                        // emailService.sendPasswordResetEmail(user.getEmail(), resetUrl);
+
+                        System.out.println("Password reset requested for: " + email);
+                } else {
+                        // Security Best Practice: Don't reveal if an email exists or not.
+                        // Just fail silently or log it.
+                        System.out.println("Forgot password requested for non-existent email: " + email);
+                }
         }
 }
