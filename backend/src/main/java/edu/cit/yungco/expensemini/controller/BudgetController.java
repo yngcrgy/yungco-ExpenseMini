@@ -7,6 +7,7 @@ import edu.cit.yungco.expensemini.service.BudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,5 +22,11 @@ public class BudgetController {
     @PostMapping
     public ResponseEntity<ApiResponse<Budget>> setBudget(@RequestBody BudgetRequest request) {
         return ResponseEntity.ok(ApiResponse.success(budgetService.setBudget(request)));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<String>> resetBudget() {
+        budgetService.resetBudget();
+        return ResponseEntity.ok(ApiResponse.success("Budget reset successfully"));
     }
 }

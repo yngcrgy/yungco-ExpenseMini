@@ -15,6 +15,10 @@ const RegisterPage = () => {
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
+    const passwordLengthValid = formData.password.length >= 8 && formData.password.length <= 12;
+    const passwordSpecialValid = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password);
+    const isPasswordValid = formData.password.length > 0 ? (passwordLengthValid && passwordSpecialValid) : false;
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -25,6 +29,11 @@ const RegisterPage = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (!passwordLengthValid || !passwordSpecialValid) {
+            setError('Please fulfill all password requirements.');
+            return;
+        }
 
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
@@ -142,12 +151,21 @@ const RegisterPage = () => {
                             name="password"
                             type="password"
                             required
-                            minLength={6}
-                            className="appearance-none block w-full px-3 py-2.5 bg-[#f8fafa] border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#2da57f] focus:border-[#2da57f] transition-colors"
-                            placeholder="Min 6 characters"
+                            className={`appearance-none block w-full px-3 py-2.5 bg-[#f8fafa] border rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 transition-colors ${formData.password.length > 0 ? (isPasswordValid ? 'border-green-500 focus:ring-green-500 focus:border-green-500' : 'border-red-500 focus:ring-red-500 focus:border-red-500') : 'border-gray-200 focus:ring-[#2da57f] focus:border-[#2da57f]'}`}
+                            placeholder="Create a secure password"
                             value={formData.password}
                             onChange={handleChange}
                         />
+                        <div className="mt-2 space-y-1">
+                            <p className={`text-xs flex items-center gap-1 ${formData.password.length === 0 ? 'text-gray-500' : (passwordLengthValid ? 'text-green-600' : 'text-red-500')}`}>
+                                <span className="inline-block w-3">{formData.password.length > 0 && (passwordLengthValid ? '✓' : '✗')}</span>
+                                Minimum 8 to 12 characters
+                            </p>
+                            <p className={`text-xs flex items-center gap-1 ${formData.password.length === 0 ? 'text-gray-500' : (passwordSpecialValid ? 'text-green-600' : 'text-red-500')}`}>
+                                <span className="inline-block w-3">{formData.password.length > 0 && (passwordSpecialValid ? '✓' : '✗')}</span>
+                                Include at least one special character (!@#$...)
+                            </p>
+                        </div>
                     </div>
 
                     <div>
@@ -159,7 +177,6 @@ const RegisterPage = () => {
                             name="confirmPassword"
                             type="password"
                             required
-                            minLength={6}
                             className="appearance-none block w-full px-3 py-2.5 bg-[#f8fafa] border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#2da57f] focus:border-[#2da57f] transition-colors"
                             placeholder="Re-enter password"
                             value={formData.confirmPassword}

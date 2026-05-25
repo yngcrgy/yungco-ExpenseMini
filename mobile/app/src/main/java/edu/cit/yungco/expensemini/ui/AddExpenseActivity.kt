@@ -23,8 +23,8 @@ class AddExpenseActivity : AppCompatActivity() {
     private lateinit var apiService: ExpenseApiService
     private var selectedDate: String = LocalDate.now().toString()
 
-    private val categories = listOf("Food", "Transport", "Personal", "School", "Other")
-    private val categoryMap = mapOf(
+    private var categories = mutableListOf("Food", "Transport", "Personal", "School", "Other")
+    private var categoryMap = mutableMapOf(
         "Food" to 1,
         "Transport" to 2,
         "Personal" to 3,
@@ -42,6 +42,32 @@ class AddExpenseActivity : AppCompatActivity() {
         setupDatePicker()
         setupSaveButton()
         setupBottomNav()
+        
+        fetchCategories()
+    }
+
+    private fun fetchCategories() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val response = apiService.getCategories()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful && response.body()?.data != null) {
+                        val fetchedCats = response.body()!!.data!!
+                        if (fetchedCats.isNotEmpty()) {
+                            categories.clear()
+                            categoryMap.clear()
+                            for (c in fetchedCats) {
+                                categories.add(c.name)
+                                categoryMap[c.name] = c.id
+                            }
+                            setupCategorySpinner()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("AddExpense", "Error fetching categories", e)
+            }
+        }
     }
 
     private fun setupCategorySpinner() {

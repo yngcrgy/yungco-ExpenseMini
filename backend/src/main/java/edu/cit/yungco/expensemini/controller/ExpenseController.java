@@ -3,6 +3,8 @@ package edu.cit.yungco.expensemini.controller;
 import edu.cit.yungco.expensemini.dto.ApiResponse;
 import edu.cit.yungco.expensemini.dto.ExpenseRequest;
 import edu.cit.yungco.expensemini.dto.ExpenseResponse;
+import edu.cit.yungco.expensemini.model.Category;
+import edu.cit.yungco.expensemini.repository.CategoryRepository;
 import edu.cit.yungco.expensemini.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
+    private final CategoryRepository categoryRepository;
 
     @PostMapping
     public ResponseEntity<ApiResponse<ExpenseResponse>> createExpense(@RequestBody ExpenseRequest request) {
@@ -37,5 +40,10 @@ public class ExpenseController {
     public ResponseEntity<ApiResponse<Void>> deleteExpense(@PathVariable Long id) {
         expenseService.deleteExpense(id);
         return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<ApiResponse<List<Category>>> getCategories() {
+        return ResponseEntity.ok(ApiResponse.success(categoryRepository.findAll()));
     }
 }

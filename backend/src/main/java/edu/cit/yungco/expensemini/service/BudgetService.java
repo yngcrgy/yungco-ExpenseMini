@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +41,12 @@ public class BudgetService {
                     .budgetLimit(request.getBudgetLimit())
                     .build());
         }
+    }
+
+    public void resetBudget() {
+        User user = getAuthenticatedUser();
+        LocalDate now = LocalDate.now();
+        Optional<Budget> existing = budgetRepository.findByUserIdAndMonthAndYear(user.getId(), now.getMonthValue(), now.getYear());
+        existing.ifPresent(budgetRepository::delete);
     }
 }

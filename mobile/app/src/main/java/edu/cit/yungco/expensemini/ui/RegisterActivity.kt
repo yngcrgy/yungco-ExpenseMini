@@ -6,6 +6,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import android.text.Editable
+import android.text.TextWatcher
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import edu.cit.yungco.expensemini.R
@@ -26,6 +29,28 @@ class RegisterActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.etRegisterEmail)
         val etPassword = findViewById<EditText>(R.id.etRegisterPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
+        val tvPasswordHint = findViewById<TextView>(R.id.tvPasswordHint)
+        
+        var isPasswordValid = false
+        
+        etPassword.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val pass = s.toString()
+                val hasSpecialChar = pass.any { !it.isLetterOrDigit() }
+                val isValidLength = pass.length in 8..12
+                
+                isPasswordValid = hasSpecialChar && isValidLength
+                if (isPasswordValid) {
+                    tvPasswordHint.text = "Password requirements met."
+                    tvPasswordHint.setTextColor(Color.parseColor("#4CAF50")) // Green
+                } else {
+                    tvPasswordHint.text = "Must be 8-12 characters and include a special character."
+                    tvPasswordHint.setTextColor(Color.parseColor("#F44336")) // Red
+                }
+            }
+        })
         
         val btnRegister = findViewById<Button>(R.id.btnRegister)
         val llSignIn = findViewById<android.widget.LinearLayout>(R.id.llSignIn)
@@ -51,8 +76,8 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (password.length < 6) {
-                Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+            if (!isPasswordValid) {
+                Toast.makeText(this, "Password does not meet requirements", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

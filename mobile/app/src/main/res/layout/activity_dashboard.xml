@@ -50,6 +50,17 @@
                     android:textAllCaps="false" />
             </LinearLayout>
 
+            <!-- Admin Portal Button (Hidden by default) -->
+            <Button
+                android:id="@+id/btnAdminPortal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Admin Portal"
+                android:textColor="@color/white"
+                android:backgroundTint="#8B5CF6"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp" />
+
             <!-- Budget Summary Card -->
             <LinearLayout
                 android:id="@+id/cardBudget"

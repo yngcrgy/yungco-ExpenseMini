@@ -164,6 +164,18 @@
                 android:textSize="16sp"
                 android:textAllCaps="false"
                 android:background="@drawable/bg_button_primary"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Reset Budget Button -->
+            <Button
+                android:id="@+id/btnResetBudget"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="Reset Monthly Budget"
+                android:textColor="#F44336"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:background="@android:color/transparent"
                 android:layout_marginBottom="16dp" />
 
             <!-- Logout Button -->

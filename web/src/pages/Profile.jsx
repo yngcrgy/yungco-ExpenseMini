@@ -23,6 +23,16 @@ const Profile = () => {
         }
     };
 
+    const handleResetBudget = async () => {
+        try {
+            await api.delete('/budgets');
+            setBudget('');
+            toast.success('Monthly budget reset successfully!');
+        } catch (err) {
+            toast.error('Failed to reset budget');
+        }
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -51,7 +61,7 @@ const Profile = () => {
                         <input required type="number" step="0.01" min="1" value={budget} onChange={e => setBudget(e.target.value)} className="w-full outline-none border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-[#2da57f] transition-all bg-gray-50 focus:bg-white" placeholder="e.g. 5000.00" />
                     </div>
                     <button type="submit" className="w-full py-3.5 rounded-xl bg-[#2da57f] shadow-lg shadow-teal-200 text-white font-bold hover:bg-[#258d6b] transition-all active:scale-95">Save Changes</button>
-                    <button type="button" className="w-full py-3.5 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors">Reset Monthly Budget</button>
+                    <button type="button" onClick={handleResetBudget} className="w-full py-3.5 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors">Reset Monthly Budget</button>
                 </form>
             </div>
 

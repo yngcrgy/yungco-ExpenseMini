@@ -23,7 +23,13 @@ interface ExpenseApiService {
     @DELETE("api/expenses/{id}")
     suspend fun deleteExpense(@Path("id") id: Long): Response<ApiResponse<Void>>
 
+    @GET("api/expenses/categories")
+    suspend fun getCategories(): Response<ApiResponse<List<Category>>>
+
     // Budget
     @POST("api/budgets")
     suspend fun setBudget(@Body request: BudgetRequest): Response<ApiResponse<Any>>
+
+    @DELETE("api/budgets")
+    suspend fun resetBudget(): Response<ApiResponse<Any>>
 }

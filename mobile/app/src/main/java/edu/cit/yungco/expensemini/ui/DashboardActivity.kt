@@ -107,6 +107,16 @@ class DashboardActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvViewAll).setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
+        
+        val btnAdmin = findViewById<Button>(R.id.btnAdminPortal)
+        if (sessionManager.getUserRole() == "ADMIN") {
+            btnAdmin.visibility = android.view.View.VISIBLE
+            btnAdmin.setOnClickListener {
+                startActivity(Intent(this, AdminActivity::class.java))
+            }
+        } else {
+            btnAdmin.visibility = android.view.View.GONE
+        }
     }
 
     private fun setupQuickAdd() {

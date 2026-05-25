@@ -14,6 +14,12 @@ data class Expense(
     fun getDisplayId(): Long = expenseId ?: id ?: 0
 }
 
+data class Category(
+    val id: Int,
+    val name: String,
+    val description: String?
+)
+
 data class ExpenseRequest(
     val title: String,
     val amount: Double,

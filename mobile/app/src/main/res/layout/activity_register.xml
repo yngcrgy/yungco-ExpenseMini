@@ -147,6 +147,15 @@
                         android:inputType="textPassword"
                         android:paddingHorizontal="16dp"
                         android:textSize="14sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvPasswordHint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Must be 8-12 characters and include a special character."
+                        android:textColor="#F44336"
+                        android:textSize="11sp"
                         android:layout_marginBottom="16dp" />
 
                     <TextView

@@ -40,6 +40,17 @@
             android:text="1/1/2026"
             android:textSize="12sp"
             android:textColor="@color/text_secondary" />
+
+        <TextView
+            android:id="@+id/tvNotes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/text_muted"
+            android:visibility="gone"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1" />
     </LinearLayout>
 
     <TextView

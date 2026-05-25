@@ -101,6 +101,36 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
         }
+
+        val btnResetBudget = findViewById<Button>(R.id.btnResetBudget)
+        btnResetBudget.setOnClickListener {
+            btnResetBudget.isEnabled = false
+            btnResetBudget.text = "Resetting..."
+            
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val response = apiService.resetBudget()
+                    withContext(Dispatchers.Main) {
+                        btnResetBudget.isEnabled = true
+                        btnResetBudget.text = "Reset Monthly Budget"
+                        
+                        if (response.isSuccessful) {
+                            etBudget.setText("")
+                            Toast.makeText(this@ProfileActivity, "Budget reset successfully!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@ProfileActivity, "Failed to reset budget", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("ProfileActivity", "Error resetting budget", e)
+                    withContext(Dispatchers.Main) {
+                        btnResetBudget.isEnabled = true
+                        btnResetBudget.text = "Reset Monthly Budget"
+                        Toast.makeText(this@ProfileActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun setupLogout() {

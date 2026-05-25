@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import AddExpense from './pages/AddExpense';
 import History from './pages/History';
 import Profile from './pages/Profile';
+import AdminPortal from './pages/AdminPortal';
 import Layout from './components/Layout';
 import { Toaster } from 'react-hot-toast';
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/add-expense" element={<PrivateRoute><AddExpense /></PrivateRoute>} />
         <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/admin" element={<PrivateRoute><AdminPortal /></PrivateRoute>} />
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>

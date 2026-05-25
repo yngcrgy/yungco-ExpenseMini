@@ -121,6 +121,7 @@ const History = () => {
                             <div>
                                 <h3 className="font-bold text-gray-800 text-lg">{e.title}</h3>
                                 <p className="text-xs text-gray-400 font-bold">{e.expense_date}</p>
+                                {e.notes && <p className="text-sm text-gray-500 mt-1">{e.notes}</p>}
                             </div>
                         </div>
                         <div className="flex items-center gap-6">

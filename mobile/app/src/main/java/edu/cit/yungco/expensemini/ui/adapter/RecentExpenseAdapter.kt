@@ -27,6 +27,7 @@ class RecentExpenseAdapter(
         val tvIcon: TextView = view.findViewById(R.id.tvExpenseIcon)
         val tvTitle: TextView = view.findViewById(R.id.tvExpenseTitle)
         val tvDate: TextView = view.findViewById(R.id.tvExpenseDate)
+        val tvNotes: TextView = view.findViewById(R.id.tvNotes)
         val tvAmount: TextView = view.findViewById(R.id.tvExpenseAmount)
     }
 
@@ -41,6 +42,13 @@ class RecentExpenseAdapter(
         holder.tvIcon.text = categoryIcons[expense.category] ?: "📦"
         holder.tvTitle.text = expense.title
         holder.tvDate.text = expense.expenseDate ?: ""
+
+        if (!expense.notes.isNullOrEmpty()) {
+            holder.tvNotes.text = expense.notes
+            holder.tvNotes.visibility = View.VISIBLE
+        } else {
+            holder.tvNotes.visibility = View.GONE
+        }
 
         val formatter = NumberFormat.getNumberInstance(Locale.US).apply {
             minimumFractionDigits = 2

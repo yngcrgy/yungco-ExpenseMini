@@ -180,6 +180,7 @@ const Dashboard = () => {
                                 <div className="flex flex-col">
                                     <span className="font-semibold text-gray-800">{e.title}</span>
                                     <span className="text-xs text-gray-400 font-medium">{e.expense_date}</span>
+                                    {e.notes && <span className="text-xs text-gray-500 mt-0.5 max-w-[200px] truncate">{e.notes}</span>}
                                 </div>
                             </div>
                             <span className="font-bold text-gray-800">-₱{parseFloat(e.amount).toFixed(2)}</span>

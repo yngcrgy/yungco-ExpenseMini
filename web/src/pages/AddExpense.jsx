@@ -7,11 +7,13 @@ const AddExpense = () => {
     const [formData, setFormData] = useState({
         title: '',
         amount: '',
-        category: 'Food',
+        category: '',
+        category_id: null,
         expense_date: new Date().toISOString().split('T')[0],
         notes: '',
         recurring: 'None'
     });
+    const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,6 +23,21 @@ const AddExpense = () => {
                 navigate('/profile');
             }
         }).catch(() => { });
+
+        api.get('/expenses/categories').then(res => {
+            const fetchedCategories = res.data.data || [];
+            setCategories(fetchedCategories);
+            if (fetchedCategories.length > 0) {
+                setFormData(prev => ({ 
+                    ...prev, 
+                    category: fetchedCategories[0].name,
+                    category_id: fetchedCategories[0].id
+                }));
+            }
+        }).catch(err => {
+            console.error("Failed to load categories", err);
+            toast.error("Failed to load categories");
+        });
     }, [navigate]);
 
     const handleSubmit = async (e) => {
@@ -35,7 +52,7 @@ const AddExpense = () => {
                 title: formData.title,
                 amount: parseFloat(formData.amount),
                 category: formData.category,
-                category_id: formData.category === 'Food' ? 1 : formData.category === 'Transport' ? 2 : formData.category === 'School' ? 3 : formData.category === 'Personal' ? 4 : 5,
+                category_id: formData.category_id,
                 expense_date: formData.expense_date,
                 notes: formData.notes
             });
@@ -46,7 +63,7 @@ const AddExpense = () => {
         }
     };
 
-    const categories = ['Food', 'Transport', 'School', 'Personal', 'Other'];
+    // removed hardcoded categories
 
     return (
         <div className="p-8 max-w-2xl mx-auto mt-10 bg-white rounded-2xl border border-gray-100 shadow-sm">
@@ -64,10 +81,10 @@ const AddExpense = () => {
                     <label className="block text-sm font-semibold text-gray-700 mb-3">Category</label>
                     <div className="flex gap-3 overflow-x-auto pb-2">
                         {categories.map(c => (
-                            <button type="button" key={c} onClick={() => setFormData({ ...formData, category: c })}
-                                className={`px-5 py-2.5 rounded-xl border text-sm font-medium transition-all whitespace-nowrap ${formData.category === c ? 'border-[#2da57f] bg-[#eaf6f2] text-[#2da57f] shadow-sm' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                            <button type="button" key={c.id} onClick={() => setFormData({ ...formData, category: c.name, category_id: c.id })}
+                                className={`px-5 py-2.5 rounded-xl border text-sm font-medium transition-all whitespace-nowrap ${formData.category === c.name ? 'border-[#2da57f] bg-[#eaf6f2] text-[#2da57f] shadow-sm' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                             >
-                                {c}
+                                {c.name}
                             </button>
                         ))}
                     </div>

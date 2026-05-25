@@ -10,6 +10,13 @@ const Layout = ({ children }) => {
         { path: '/profile', label: 'Profile', icon: UserIcon },
     ];
 
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    
+    if (user && user.role === 'ADMIN') {
+        menuItems.push({ path: '/admin', label: 'Admin Portal', icon: LayoutDashboard });
+    }
+
     return (
         <div className="flex h-screen bg-gray-50 font-sans text-gray-800">
             <aside className="w-64 bg-white border-r flex flex-col">

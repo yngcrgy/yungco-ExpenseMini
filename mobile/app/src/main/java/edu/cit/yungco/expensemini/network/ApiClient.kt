@@ -48,4 +48,33 @@ object ApiClient {
             .build()
             .create(ExpenseApiService::class.java)
     }
+    // Admin service (requires token)
+    fun getAdminService(context: Context): AdminApiService {
+        val sessionManager = SessionManager(context)
+        val token = sessionManager.getToken() ?: ""
+
+        val authInterceptor = Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .addHeader("Authorization", "Bearer $token")
+                .addHeader("Content-Type", "application/json")
+                .build()
+            chain.proceed(request)
+        }
+
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AdminApiService::class.java)
+    }
 }

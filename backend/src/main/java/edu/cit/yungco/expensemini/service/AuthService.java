@@ -27,6 +27,14 @@ public class AuthService {
                 if (repository.existsByEmail(request.getEmail())) {
                         throw new RuntimeException("Email already in use");
                 }
+                
+                String pass = request.getPassword();
+                if (pass == null || pass.length() < 8 || pass.length() > 12) {
+                        throw new RuntimeException("Password must be 8 to 12 characters long.");
+                }
+                if (!pass.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
+                        throw new RuntimeException("Password must contain at least one special character.");
+                }
 
                 var user = User.builder()
                                 .firstName(request.getFirstName())

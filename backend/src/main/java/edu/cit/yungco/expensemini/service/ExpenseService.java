@@ -84,6 +84,7 @@ public class ExpenseService {
                 .amount(e.getAmount())
                 .category(e.getCategoryString())
                 .expenseDate(e.getExpenseDate())
+                .notes(e.getNotes())
                 .build();
     }
 }
