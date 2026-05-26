@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/api/exchange")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ExternalApiController {
 
     private final ExternalApiService externalApiService;

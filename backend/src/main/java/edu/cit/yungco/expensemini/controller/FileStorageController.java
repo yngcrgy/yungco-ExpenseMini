@@ -16,7 +16,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/files")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class FileStorageController {
 
     private final FileStorageService fileStorageService;

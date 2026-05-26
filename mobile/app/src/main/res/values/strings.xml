@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ExpenseMini</string>
+    <string name="system_directory_amp_stats"><![CDATA[System Directory &amp Stats]]></string>
 </resources>

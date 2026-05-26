@@ -44,12 +44,11 @@ class RegisterActivity : AppCompatActivity() {
                 isPasswordValid = hasSpecialChar && isValidLength
                 if (isPasswordValid) {
                     tvPasswordHint.text = "Password requirements met."
-                    tvPasswordHint.setTextColor(Color.parseColor("#4CAF50")) // Green
+                    tvPasswordHint.setTextColor(androidx.core.content.ContextCompat.getColor(this@RegisterActivity, R.color.primary))
                 } else {
                     tvPasswordHint.text = "Must be 8-12 characters and include a special character."
-                    tvPasswordHint.setTextColor(Color.parseColor("#F44336")) // Red
-                }
-            }
+                    tvPasswordHint.setTextColor(androidx.core.content.ContextCompat.getColor(this@RegisterActivity, R.color.warning))
+                }            }
         })
         
         val btnRegister = findViewById<Button>(R.id.btnRegister)

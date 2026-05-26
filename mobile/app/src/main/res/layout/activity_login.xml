@@ -84,7 +84,7 @@
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:backgroundTint="@color/primary_teal"
+                android:backgroundTint="@color/primary"
                 android:text="Login"
                 android:textColor="@color/white"
                 android:textSize="14sp"
@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Create one"
-                    android:textColor="@color/primary_teal"
+                    android:textColor="@color/primary"
                     android:textStyle="bold"
                     android:textSize="12sp" />
             </LinearLayout>

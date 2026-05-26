@@ -154,7 +154,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Must be 8-12 characters and include a special character."
-                        android:textColor="#F44336"
+                        android:textColor="@color/warning"
                         android:textSize="11sp"
                         android:layout_marginBottom="16dp" />
 
@@ -181,7 +181,7 @@
                         android:id="@+id/btnRegister"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:backgroundTint="@color/primary_teal"
+                        android:backgroundTint="@color/primary"
                         android:text="Create Account"
                         android:textColor="@color/white"
                         android:textSize="14sp"
@@ -209,7 +209,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Sign in"
-                            android:textColor="@color/primary_teal"
+                            android:textColor="@color/primary"
                             android:textStyle="bold"
                             android:textSize="12sp" />
                     </LinearLayout>

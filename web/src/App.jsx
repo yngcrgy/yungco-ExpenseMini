@@ -31,7 +31,7 @@ function App() {
         <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/admin" element={<PrivateRoute><AdminPortal /></PrivateRoute>} />
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

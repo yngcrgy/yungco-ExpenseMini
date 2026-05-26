@@ -1,48 +1,56 @@
-package edu.cit.yungco.expensemini.ui
+package edu.cit.yungco.expensemini.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.cit.yungco.expensemini.R
 import edu.cit.yungco.expensemini.network.ApiClient
 import edu.cit.yungco.expensemini.network.ExpenseApiService
 import edu.cit.yungco.expensemini.network.SessionManager
 import edu.cit.yungco.expensemini.network.models.BudgetRequest
+import edu.cit.yungco.expensemini.ui.LoginActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileFragment : Fragment() {
 
     private lateinit var sessionManager: SessionManager
     private lateinit var apiService: ExpenseApiService
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-
-        sessionManager = SessionManager(this)
-        apiService = ApiClient.getExpenseService(this)
-
-        loadUserInfo()
-        setupSaveButton()
-        setupLogout()
-        setupBottomNav()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-    private fun loadUserInfo() {
-        val tvUserName = findViewById<TextView>(R.id.tvUserName)
-        val tvUserEmail = findViewById<TextView>(R.id.tvUserEmail)
-        val etName = findViewById<EditText>(R.id.etProfileName)
-        val etEmail = findViewById<EditText>(R.id.etProfileEmail)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        sessionManager = SessionManager(requireContext())
+        apiService = ApiClient.getExpenseService(requireContext())
+
+        loadUserInfo(view)
+        setupSaveButton(view)
+        setupLogout(view)
+    }
+
+    private fun loadUserInfo(view: View) {
+        val tvUserName = view.findViewById<TextView>(R.id.tvUserName)
+        val tvUserEmail = view.findViewById<TextView>(R.id.tvUserEmail)
+        val etName = view.findViewById<EditText>(R.id.etProfileName)
+        val etEmail = view.findViewById<EditText>(R.id.etProfileEmail)
 
         tvUserName.text = sessionManager.getFullName()
         tvUserEmail.text = sessionManager.getEmail()
@@ -50,21 +58,21 @@ class ProfileActivity : AppCompatActivity() {
         etEmail.setText(sessionManager.getEmail())
     }
 
-    private fun setupSaveButton() {
-        val btnSave = findViewById<Button>(R.id.btnSaveSettings)
-        val etBudget = findViewById<EditText>(R.id.etBudget)
+    private fun setupSaveButton(view: View) {
+        val btnSave = view.findViewById<Button>(R.id.btnSaveSettings)
+        val etBudget = view.findViewById<EditText>(R.id.etBudget)
 
         btnSave.setOnClickListener {
             val budgetStr = etBudget.text.toString().trim()
 
             if (budgetStr.isEmpty()) {
-                Toast.makeText(this, "Please enter a budget amount", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please enter a budget amount", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val budgetAmount = budgetStr.toDoubleOrNull()
             if (budgetAmount == null || budgetAmount <= 0) {
-                Toast.makeText(this, "Please enter a valid budget", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please enter a valid budget", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -86,23 +94,23 @@ class ProfileActivity : AppCompatActivity() {
                         btnSave.text = "Save Settings"
 
                         if (response.isSuccessful) {
-                            Toast.makeText(this@ProfileActivity, "Settings saved!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Settings saved!", Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(this@ProfileActivity, "Failed to save settings", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Failed to save settings", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("ProfileActivity", "Error saving settings", e)
+                    Log.e("ProfileFragment", "Error saving settings", e)
                     withContext(Dispatchers.Main) {
                         btnSave.isEnabled = true
                         btnSave.text = "Save Settings"
-                        Toast.makeText(this@ProfileActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
 
-        val btnResetBudget = findViewById<Button>(R.id.btnResetBudget)
+        val btnResetBudget = view.findViewById<Button>(R.id.btnResetBudget)
         btnResetBudget.setOnClickListener {
             btnResetBudget.isEnabled = false
             btnResetBudget.text = "Resetting..."
@@ -116,58 +124,32 @@ class ProfileActivity : AppCompatActivity() {
                         
                         if (response.isSuccessful) {
                             etBudget.setText("")
-                            Toast.makeText(this@ProfileActivity, "Budget reset successfully!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Budget reset successfully!", Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(this@ProfileActivity, "Failed to reset budget", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Failed to reset budget", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("ProfileActivity", "Error resetting budget", e)
+                    Log.e("ProfileFragment", "Error resetting budget", e)
                     withContext(Dispatchers.Main) {
                         btnResetBudget.isEnabled = true
                         btnResetBudget.text = "Reset Monthly Budget"
-                        Toast.makeText(this@ProfileActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
     }
 
-    private fun setupLogout() {
-        val btnLogout = findViewById<Button>(R.id.btnLogout)
+    private fun setupLogout(view: View) {
+        val btnLogout = view.findViewById<Button>(R.id.btnLogout)
         btnLogout.setOnClickListener {
             sessionManager.clearSession()
-            Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, LoginActivity::class.java)
+            Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            finish()
-        }
-    }
-
-    private fun setupBottomNav() {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_profile
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_dashboard -> {
-                    startActivity(Intent(this, DashboardActivity::class.java))
-                    finish()
-                    true
-                }
-                R.id.nav_add -> {
-                    startActivity(Intent(this, AddExpenseActivity::class.java))
-                    finish()
-                    true
-                }
-                R.id.nav_history -> {
-                    startActivity(Intent(this, HistoryActivity::class.java))
-                    finish()
-                    true
-                }
-                R.id.nav_profile -> true
-                else -> false
-            }
+            activity?.finish()
         }
     }
 }

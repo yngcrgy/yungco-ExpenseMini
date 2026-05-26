@@ -1,18 +1,18 @@
-package edu.cit.yungco.expensemini.ui
+package edu.cit.yungco.expensemini.ui.fragment
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.cit.yungco.expensemini.R
 import edu.cit.yungco.expensemini.network.ApiClient
 import edu.cit.yungco.expensemini.network.ExpenseApiService
@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HistoryActivity : AppCompatActivity() {
+class HistoryFragment : Fragment() {
 
     private lateinit var apiService: ExpenseApiService
     private lateinit var adapter: HistoryExpenseAdapter
@@ -36,62 +36,67 @@ class HistoryActivity : AppCompatActivity() {
         "Food" to 1, "Transport" to 2, "Personal" to 3, "School" to 4, "Other" to 5
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_history, container, false)
+    }
 
-        apiService = ApiClient.getExpenseService(this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        setupAdapter()
-        setupSearch()
-        setupFilter()
-        setupBottomNav()
-        loadExpenses()
+        apiService = ApiClient.getExpenseService(requireContext())
+
+        setupAdapter(view)
+        setupSearch(view)
+        setupFilter(view)
+        loadExpenses(view)
     }
 
     override fun onResume() {
         super.onResume()
-        loadExpenses()
+        view?.let { loadExpenses(it) }
     }
 
-    private fun setupAdapter() {
+    private fun setupAdapter(view: View) {
         adapter = HistoryExpenseAdapter(
             onEdit = { expense -> showEditDialog(expense) },
             onDelete = { expense -> showDeleteDialog(expense) }
         )
-        val rv = findViewById<RecyclerView>(R.id.rvExpenses)
-        rv.layoutManager = LinearLayoutManager(this)
+        val rv = view.findViewById<RecyclerView>(R.id.rvExpenses)
+        rv.layoutManager = LinearLayoutManager(requireContext())
         rv.adapter = adapter
     }
 
-    private fun setupSearch() {
-        val etSearch = findViewById<EditText>(R.id.etSearch)
+    private fun setupSearch(view: View) {
+        val etSearch = view.findViewById<EditText>(R.id.etSearch)
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 searchQuery = s.toString().trim()
-                applyFilters()
+                applyFilters(view)
             }
         })
     }
 
-    private fun setupFilter() {
-        val spinner = findViewById<Spinner>(R.id.spinnerFilter)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+    private fun setupFilter(view: View) {
+        val spinner = view.findViewById<Spinner>(R.id.spinnerFilter)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
         spinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, pos: Int, id: Long) {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, v: View?, pos: Int, id: Long) {
                 filterCategory = categories[pos]
-                applyFilters()
+                applyFilters(view)
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }
     }
 
-    private fun applyFilters() {
+    private fun applyFilters(view: View) {
         var filtered = allExpenses
 
         if (filterCategory != "All") {
@@ -106,31 +111,31 @@ class HistoryActivity : AppCompatActivity() {
         }
 
         adapter.updateData(filtered)
-        findViewById<TextView>(R.id.tvExpenseCount).text = "${filtered.size} expense${if (filtered.size != 1) "s" else ""}"
+        view.findViewById<TextView>(R.id.tvExpenseCount).text = "${filtered.size} expense${if (filtered.size != 1) "s" else ""}"
     }
 
-    private fun loadExpenses() {
+    private fun loadExpenses(view: View) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = apiService.getExpenses()
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && response.body()?.data != null) {
                         allExpenses = response.body()!!.data!!.sortedByDescending { it.expenseDate }
-                        applyFilters()
+                        applyFilters(view)
                     }
                 }
             } catch (e: Exception) {
-                Log.e("HistoryActivity", "Error loading expenses", e)
+                Log.e("HistoryFragment", "Error loading expenses", e)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@HistoryActivity, "Error loading expenses", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error loading expenses", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
     private fun showEditDialog(expense: Expense) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_edit_expense, null)
-        val dialog = AlertDialog.Builder(this)
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_expense, null)
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .create()
 
@@ -141,12 +146,11 @@ class HistoryActivity : AppCompatActivity() {
         val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelEdit)
         val btnClose = dialogView.findViewById<TextView>(R.id.btnCloseEdit)
 
-        // Pre-fill values
         etTitle.setText(expense.title)
         etAmount.setText(expense.amount.toString())
 
-        val editCategories = categories.drop(1) // Remove "All"
-        val catAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, editCategories)
+        val editCategories = categories.drop(1)
+        val catAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, editCategories)
         catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = catAdapter
 
@@ -162,13 +166,13 @@ class HistoryActivity : AppCompatActivity() {
             val category = spinnerCategory.selectedItem.toString()
 
             if (title.isEmpty() || amountStr.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val amount = amountStr.toDoubleOrNull()
             if (amount == null || amount <= 0) {
-                Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Invalid amount", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -186,16 +190,16 @@ class HistoryActivity : AppCompatActivity() {
                     val response = apiService.updateExpense(expense.getDisplayId(), request)
                     withContext(Dispatchers.Main) {
                         if (response.isSuccessful) {
-                            Toast.makeText(this@HistoryActivity, "Expense updated!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Expense updated!", Toast.LENGTH_SHORT).show()
                             dialog.dismiss()
-                            loadExpenses()
+                            view?.let { loadExpenses(it) }
                         } else {
-                            Toast.makeText(this@HistoryActivity, "Failed to update", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Failed to update", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@HistoryActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -205,7 +209,7 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun showDeleteDialog(expense: Expense) {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle("Delete expense?")
             .setMessage("This action cannot be undone.")
             .setPositiveButton("Delete") { _, _ ->
@@ -214,46 +218,20 @@ class HistoryActivity : AppCompatActivity() {
                         val response = apiService.deleteExpense(expense.getDisplayId())
                         withContext(Dispatchers.Main) {
                             if (response.isSuccessful) {
-                                Toast.makeText(this@HistoryActivity, "Expense deleted", Toast.LENGTH_SHORT).show()
-                                loadExpenses()
+                                Toast.makeText(requireContext(), "Expense deleted", Toast.LENGTH_SHORT).show()
+                                view?.let { loadExpenses(it) }
                             } else {
-                                Toast.makeText(this@HistoryActivity, "Failed to delete", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), "Failed to delete", Toast.LENGTH_SHORT).show()
                             }
                         }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@HistoryActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
-    }
-
-    private fun setupBottomNav() {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_history
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_dashboard -> {
-                    startActivity(Intent(this, DashboardActivity::class.java))
-                    finish()
-                    true
-                }
-                R.id.nav_add -> {
-                    startActivity(Intent(this, AddExpenseActivity::class.java))
-                    finish()
-                    true
-                }
-                R.id.nav_history -> true
-                R.id.nav_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    finish()
-                    true
-                }
-                else -> false
-            }
-        }
     }
 }

@@ -11,9 +11,12 @@ const AdminPortal = () => {
   const [activeTab, setActiveTab] = useState('users');
   const [loading, setLoading] = useState(true);
 
-  // Category form state
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryDesc, setNewCategoryDesc] = useState('');
+
+  // Confirmation modal state
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmConfig, setConfirmConfig] = useState({ title: '', message: '', onConfirm: () => {} });
 
   useEffect(() => {
     fetchStats();
@@ -50,16 +53,23 @@ const AdminPortal = () => {
     }
   };
 
-  const handleDeleteUser = async (id) => {
-    if (!window.confirm("Are you sure? This will permanently delete the user AND all their expenses.")) return;
-    try {
-      await api.delete(`/admin/users/${id}`);
-      toast.success('User and their expenses deleted');
-      fetchData();
-      fetchStats();
-    } catch (error) {
-      toast.error('Failed to delete user');
-    }
+  const handleDeleteUser = (id) => {
+    setConfirmConfig({
+      title: 'Delete User?',
+      message: 'This will permanently delete the user and all their expenses. This action cannot be undone.',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/admin/users/${id}`);
+          toast.success('User and their expenses deleted');
+          fetchData();
+          fetchStats();
+        } catch (error) {
+          toast.error('Failed to delete user');
+        }
+        setShowConfirm(false);
+      }
+    });
+    setShowConfirm(true);
   };
 
   const handleCreateCategory = async (e) => {
@@ -78,19 +88,56 @@ const AdminPortal = () => {
     }
   };
 
-  const handleDeleteCategory = async (id) => {
-    if (!window.confirm("Delete this category?")) return;
-    try {
-      await api.delete(`/admin/categories/${id}`);
-      toast.success('Category deleted');
-      fetchData();
-    } catch (error) {
-      toast.error('Failed to delete category');
-    }
+  const handleDeleteCategory = (id) => {
+    setConfirmConfig({
+      title: 'Delete Category?',
+      message: 'Are you sure you want to delete this category?',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/admin/categories/${id}`);
+          toast.success('Category deleted');
+          fetchData();
+        } catch (error) {
+          toast.error('Failed to delete category');
+        }
+        setShowConfirm(false);
+      }
+    });
+    setShowConfirm(true);
   };
 
   return (
     <div className="p-6">
+      {/* Custom Confirmation Modal */}
+      {showConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 transform animate-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="bg-red-50 p-3 rounded-full mb-4">
+                <Trash2 className="text-red-500" size={24} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{confirmConfig.title}</h3>
+              <p className="text-gray-500 text-sm mb-6">{confirmConfig.message}</p>
+              
+              <div className="flex gap-3 w-full">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmConfig.onConfirm}
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 shadow-lg shadow-red-100 transition-all active:scale-95"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Admin Portal</h1>
         <div className="flex bg-gray-200 rounded-lg p-1">

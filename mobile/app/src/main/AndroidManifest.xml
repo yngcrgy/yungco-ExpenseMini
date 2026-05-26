@@ -25,10 +25,7 @@
         </activity>
 
         <activity android:name=".ui.RegisterActivity" />
-        <activity android:name=".ui.DashboardActivity" />
-        <activity android:name=".ui.AddExpenseActivity" />
-        <activity android:name=".ui.HistoryActivity" />
-        <activity android:name=".ui.ProfileActivity" />
+        <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.AdminActivity" />
     </application>
 

@@ -44,6 +44,11 @@ class SessionManager(context: Context) {
 
     fun isLoggedIn(): Boolean = getToken() != null
 
+    fun getUserRole(): String? {
+        // Replace "prefs" with whatever you named your SharedPreferences variable in this class
+        return prefs.getString("USER_ROLE", null)
+    }
+
     fun clearSession() {
         prefs.edit().clear().apply()
     }

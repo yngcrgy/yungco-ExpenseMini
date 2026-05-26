@@ -27,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Auto-login if session exists
         if (sessionManager.isLoggedIn()) {
-            navigateToDashboard()
+            navigateToMain()
             return
         }
 
@@ -77,7 +77,7 @@ class LoginActivity : AppCompatActivity() {
                             )
 
                             Toast.makeText(this@LoginActivity, "Welcome ${authResponse.firstName ?: ""}!", Toast.LENGTH_LONG).show()
-                            navigateToDashboard()
+                            navigateToMain()
                         } else {
                             Toast.makeText(this@LoginActivity, "Invalid Credentials", Toast.LENGTH_SHORT).show()
                         }
@@ -94,8 +94,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToDashboard() {
-        val intent = Intent(this, DashboardActivity::class.java)
+    private fun navigateToMain() {
+        val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

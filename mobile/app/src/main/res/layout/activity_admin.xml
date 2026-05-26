@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F4F6">
+    android:background="@color/background">
 
     <LinearLayout
         android:id="@+id/headerLayout"
@@ -19,14 +19,14 @@
             android:text="Admin Portal"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="#1F2937" />
+            android:textColor="@color/text_primary" />
             
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="System Directory & Stats"
+            android:text="@string/system_directory_amp_stats"
             android:textSize="14sp"
-            android:textColor="#6B7280" />
+            android:textColor="@color/text_secondary" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -46,8 +46,8 @@
                     android:background="@drawable/bg_card_rounded"
                     android:padding="16dp"
                     android:layout_marginEnd="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Users" android:textSize="12sp" android:textColor="#6B7280"/>
-                    <TextView android:id="@+id/tvStatUsers" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textSize="24sp" android:textStyle="bold" android:textColor="#1F2937" android:layout_marginTop="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Users" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                    <TextView android:id="@+id/tvStatUsers" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/text_primary" android:layout_marginTop="4dp"/>
                 </LinearLayout>
 
                 <!-- Expenses Card -->
@@ -58,8 +58,8 @@
                     android:background="@drawable/bg_card_rounded"
                     android:padding="16dp"
                     android:layout_marginEnd="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Expenses" android:textSize="12sp" android:textColor="#6B7280"/>
-                    <TextView android:id="@+id/tvStatExpenses" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textSize="24sp" android:textStyle="bold" android:textColor="#1F2937" android:layout_marginTop="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Expenses" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                    <TextView android:id="@+id/tvStatExpenses" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/text_primary" android:layout_marginTop="4dp"/>
                 </LinearLayout>
 
                 <!-- System Volume Card -->
@@ -70,8 +70,8 @@
                     android:background="@drawable/bg_card_rounded"
                     android:padding="16dp"
                     android:layout_marginEnd="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Volume" android:textSize="12sp" android:textColor="#6B7280"/>
-                    <TextView android:id="@+id/tvStatVolume" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="$-" android:textSize="24sp" android:textStyle="bold" android:textColor="#1F2937" android:layout_marginTop="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Volume" android:textSize="12sp" android:textColor="@color/text_secondary"/>
+                    <TextView android:id="@+id/tvStatVolume" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="$-" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/text_primary" android:layout_marginTop="4dp"/>
                 </LinearLayout>
 
             </LinearLayout>

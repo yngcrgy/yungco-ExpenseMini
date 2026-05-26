@@ -1,15 +1,14 @@
-package edu.cit.yungco.expensemini.ui
+package edu.cit.yungco.expensemini.ui.fragment
 
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,14 +17,14 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.cit.yungco.expensemini.R
 import edu.cit.yungco.expensemini.network.ApiClient
 import edu.cit.yungco.expensemini.network.ExpenseApiService
 import edu.cit.yungco.expensemini.network.SessionManager
 import edu.cit.yungco.expensemini.network.models.Expense
 import edu.cit.yungco.expensemini.network.models.ExpenseRequest
+import edu.cit.yungco.expensemini.ui.AdminActivity
+import edu.cit.yungco.expensemini.ui.MainActivity
 import edu.cit.yungco.expensemini.ui.adapter.RecentExpenseAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +33,7 @@ import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.Locale
 
-class DashboardActivity : AppCompatActivity() {
+class DashboardFragment : Fragment() {
 
     private lateinit var sessionManager: SessionManager
     private lateinit var apiService: ExpenseApiService
@@ -44,82 +43,59 @@ class DashboardActivity : AppCompatActivity() {
         maximumFractionDigits = 2
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_dashboard, container, false)
+    }
 
-        sessionManager = SessionManager(this)
-        apiService = ApiClient.getExpenseService(this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
-        setupBottomNav()
-        setupQuickAdd()
-        setupClickListeners()
+        sessionManager = SessionManager(requireContext())
+        apiService = ApiClient.getExpenseService(requireContext())
 
-        loadDashboardData()
+        setupRecyclerView(view)
+        setupQuickAdd(view)
+        setupClickListeners(view)
+
+        loadDashboardData(view)
     }
 
     override fun onResume() {
         super.onResume()
-        loadDashboardData()
+        view?.let { loadDashboardData(it) }
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView(view: View) {
         recentAdapter = RecentExpenseAdapter()
-        val rv = findViewById<RecyclerView>(R.id.rvRecentExpenses)
-        rv.layoutManager = LinearLayoutManager(this)
+        val rv = view.findViewById<RecyclerView>(R.id.rvRecentExpenses)
+        rv.layoutManager = LinearLayoutManager(requireContext())
         rv.adapter = recentAdapter
     }
 
-    private fun setupBottomNav() {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_dashboard
-
-        // Set active color
-        bottomNav.itemIconTintList = getColorStateList(R.color.nav_active)
-        bottomNav.itemTextColor = getColorStateList(R.color.nav_active)
-
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_dashboard -> true
-                R.id.nav_add -> {
-                    startActivity(Intent(this, AddExpenseActivity::class.java))
-                    false
-                }
-                R.id.nav_history -> {
-                    startActivity(Intent(this, HistoryActivity::class.java))
-                    false
-                }
-                R.id.nav_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    false
-                }
-                else -> false
-            }
-        }
-    }
-
-    private fun setupClickListeners() {
-        findViewById<Button>(R.id.btnAddExpense).setOnClickListener {
-            startActivity(Intent(this, AddExpenseActivity::class.java))
+    private fun setupClickListeners(view: View) {
+        view.findViewById<Button>(R.id.btnAddExpense).setOnClickListener {
+            (activity as? MainActivity)?.navigateToTab(R.id.nav_add)
         }
 
-        findViewById<TextView>(R.id.tvViewAll).setOnClickListener {
-            startActivity(Intent(this, HistoryActivity::class.java))
+        view.findViewById<TextView>(R.id.tvViewAll).setOnClickListener {
+            (activity as? MainActivity)?.navigateToTab(R.id.nav_history)
         }
         
-        val btnAdmin = findViewById<Button>(R.id.btnAdminPortal)
+        val btnAdmin = view.findViewById<Button>(R.id.btnAdminPortal)
         if (sessionManager.getUserRole() == "ADMIN") {
-            btnAdmin.visibility = android.view.View.VISIBLE
+            btnAdmin.visibility = View.VISIBLE
             btnAdmin.setOnClickListener {
-                startActivity(Intent(this, AdminActivity::class.java))
+                startActivity(Intent(requireContext(), AdminActivity::class.java))
             }
         } else {
-            btnAdmin.visibility = android.view.View.GONE
+            btnAdmin.visibility = View.GONE
         }
     }
 
-    private fun setupQuickAdd() {
+    private fun setupQuickAdd(view: View) {
         val quickAddItems = listOf(
             Triple(R.id.btnQuickCoffee, "Coffee", 150.0),
             Triple(R.id.btnQuickTransport, "Transport", 50.0),
@@ -128,7 +104,7 @@ class DashboardActivity : AppCompatActivity() {
         )
 
         for ((viewId, title, amount) in quickAddItems) {
-            findViewById<LinearLayout>(viewId).setOnClickListener {
+            view.findViewById<LinearLayout>(viewId).setOnClickListener {
                 quickAddExpense(title, amount)
             }
         }
@@ -154,21 +130,21 @@ class DashboardActivity : AppCompatActivity() {
                 val response = apiService.createExpense(request)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-                        Toast.makeText(this@DashboardActivity, "$title added! ₱${amount.toInt()}", Toast.LENGTH_SHORT).show()
-                        loadDashboardData()
+                        Toast.makeText(requireContext(), "$title added! ₱${amount.toInt()}", Toast.LENGTH_SHORT).show()
+                        view?.let { loadDashboardData(it) }
                     } else {
-                        Toast.makeText(this@DashboardActivity, "Failed to add expense", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Failed to add expense", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@DashboardActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    private fun loadDashboardData() {
+    private fun loadDashboardData(view: View) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val summaryResponse = apiService.getDashboardSummary()
@@ -177,33 +153,33 @@ class DashboardActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (summaryResponse.isSuccessful && summaryResponse.body()?.data != null) {
                         val summary = summaryResponse.body()!!.data!!
-                        updateBudgetCard(summary.totalExpenses, summary.monthlyBudget, summary.remainingBudget)
-                        updateStatistics(summary.avgDailySpending, summary.topCategory)
+                        updateBudgetCard(view, summary.totalExpenses, summary.monthlyBudget, summary.remainingBudget)
+                        updateStatistics(view, summary.avgDailySpending, summary.topCategory)
                     }
 
                     if (expensesResponse.isSuccessful && expensesResponse.body()?.data != null) {
                         val expenses = expensesResponse.body()!!.data!!
                         updateRecentExpenses(expenses)
-                        updatePieChart(expenses)
-                        updateBarChart(expenses)
-                        updateHighestExpense(expenses)
-                        updateSpendingInsight(expenses)
+                        updatePieChart(view, expenses)
+                        updateBarChart(view, expenses)
+                        updateHighestExpense(view, expenses)
+                        updateSpendingInsight(view, expenses)
                     }
                 }
             } catch (e: Exception) {
-                Log.e("DashboardActivity", "Error loading data", e)
+                Log.e("DashboardFragment", "Error loading data", e)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@DashboardActivity, "Error loading dashboard", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error loading dashboard", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    private fun updateBudgetCard(totalExpenses: Double, monthlyBudget: Double, remaining: Double) {
-        val tvTotalSpending = findViewById<TextView>(R.id.tvTotalSpending)
-        val tvBudgetLimit = findViewById<TextView>(R.id.tvBudgetLimit)
-        val tvBudgetStatus = findViewById<TextView>(R.id.tvBudgetStatus)
-        val progressBudget = findViewById<ProgressBar>(R.id.progressBudget)
+    private fun updateBudgetCard(view: View, totalExpenses: Double, monthlyBudget: Double, remaining: Double) {
+        val tvTotalSpending = view.findViewById<TextView>(R.id.tvTotalSpending)
+        val tvBudgetLimit = view.findViewById<TextView>(R.id.tvBudgetLimit)
+        val tvBudgetStatus = view.findViewById<TextView>(R.id.tvBudgetStatus)
+        val progressBudget = view.findViewById<ProgressBar>(R.id.progressBudget)
 
         tvTotalSpending.text = "₱${formatter.format(totalExpenses)}"
         tvBudgetLimit.text = " / ₱${formatter.format(monthlyBudget)}"
@@ -215,30 +191,29 @@ class DashboardActivity : AppCompatActivity() {
             if (totalExpenses > monthlyBudget) {
                 val over = totalExpenses - monthlyBudget
                 tvBudgetStatus.text = "₱${formatter.format(over)} over"
-                tvBudgetStatus.setTextColor(getColor(R.color.warning))
-                progressBudget.progressDrawable = getDrawable(R.drawable.progress_budget_exceeded)
+                tvBudgetStatus.setTextColor(requireContext().getColor(R.color.warning))
+                progressBudget.progressDrawable = requireContext().getDrawable(R.drawable.progress_budget_exceeded)
             } else {
                 tvBudgetStatus.text = "₱${formatter.format(remaining)} left"
-                tvBudgetStatus.setTextColor(getColor(R.color.primary))
-                progressBudget.progressDrawable = getDrawable(R.drawable.progress_budget)
+                tvBudgetStatus.setTextColor(requireContext().getColor(R.color.primary))
+                progressBudget.progressDrawable = requireContext().getDrawable(R.drawable.progress_budget)
             }
         }
     }
 
-    private fun updateStatistics(avgDaily: Double, topCategory: String?) {
-        findViewById<TextView>(R.id.tvAvgDaily).text = "₱${avgDaily.toInt()}"
-        findViewById<TextView>(R.id.tvTopCategory).text = topCategory ?: "—"
+    private fun updateStatistics(view: View, avgDaily: Double, topCategory: String?) {
+        view.findViewById<TextView>(R.id.tvAvgDaily).text = "₱${avgDaily.toInt()}"
+        view.findViewById<TextView>(R.id.tvTopCategory).text = topCategory ?: "—"
     }
 
-    private fun updateHighestExpense(expenses: List<Expense>) {
+    private fun updateHighestExpense(view: View, expenses: List<Expense>) {
         val highest = expenses.maxByOrNull { it.amount }
-        findViewById<TextView>(R.id.tvHighest).text = if (highest != null) "₱${highest.amount.toInt()}" else "₱0"
+        view.findViewById<TextView>(R.id.tvHighest).text = if (highest != null) "₱${highest.amount.toInt()}" else "₱0"
     }
 
-    private fun updateSpendingInsight(expenses: List<Expense>) {
-        // Simple insight: compare total with a placeholder for last month
-        val tvInsight = findViewById<TextView>(R.id.tvSpendingInsight)
-        val tvLastMonth = findViewById<TextView>(R.id.tvLastMonth)
+    private fun updateSpendingInsight(view: View, expenses: List<Expense>) {
+        val tvInsight = view.findViewById<TextView>(R.id.tvSpendingInsight)
+        val tvLastMonth = view.findViewById<TextView>(R.id.tvLastMonth)
 
         val total = expenses.sumOf { it.amount }
         tvInsight.text = "Spending this month: ₱${formatter.format(total)}"
@@ -250,8 +225,8 @@ class DashboardActivity : AppCompatActivity() {
         recentAdapter.updateData(recent)
     }
 
-    private fun updatePieChart(expenses: List<Expense>) {
-        val pieChart = findViewById<PieChart>(R.id.pieChart)
+    private fun updatePieChart(view: View, expenses: List<Expense>) {
+        val pieChart = view.findViewById<PieChart>(R.id.pieChart)
         val categoryTotals = expenses.groupBy { it.category ?: "Other" }
             .mapValues { (_, exps) -> exps.sumOf { it.amount }.toFloat() }
 
@@ -266,11 +241,11 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         val chartColors = listOf(
-            Color.parseColor("#2F9E73"),
-            Color.parseColor("#F59E0B"),
-            Color.parseColor("#3B82F6"),
-            Color.parseColor("#EF4444"),
-            Color.parseColor("#8B5CF6")
+            Color.parseColor("#2da57f"),
+            Color.parseColor("#fbbf24"),
+            Color.parseColor("#60a5fa"),
+            Color.parseColor("#ef4444"),
+            Color.parseColor("#a78bfa")
         )
 
         val dataSet = PieDataSet(entries, "").apply {
@@ -295,10 +270,9 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateBarChart(expenses: List<Expense>) {
-        val barChart = findViewById<BarChart>(R.id.barChart)
+    private fun updateBarChart(view: View, expenses: List<Expense>) {
+        val barChart = view.findViewById<BarChart>(R.id.barChart)
 
-        // Group expenses by week of month
         val weekTotals = FloatArray(4) { 0f }
         for (expense in expenses) {
             try {
@@ -306,7 +280,6 @@ class DashboardActivity : AppCompatActivity() {
                 val week = ((date.dayOfMonth - 1) / 7).coerceIn(0, 3)
                 weekTotals[week] += expense.amount.toFloat()
             } catch (_: Exception) {
-                // skip if date parsing fails
             }
         }
 
@@ -315,9 +288,9 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         val dataSet = BarDataSet(entries, "Weekly").apply {
-            color = Color.parseColor("#2F9E73")
+            color = Color.parseColor("#2da57f")
             valueTextSize = 10f
-            valueTextColor = Color.parseColor("#1F2937")
+            valueTextColor = Color.parseColor("#1f2937")
         }
 
         barChart.apply {

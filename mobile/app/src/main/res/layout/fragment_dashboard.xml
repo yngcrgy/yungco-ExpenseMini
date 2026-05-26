@@ -8,10 +8,8 @@
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="Admin Portal"
                 android:textColor="@color/white"
-                android:backgroundTint="#8B5CF6"
+                android:backgroundTint="@color/chart_5"
                 android:visibility="gone"
                 android:layout_marginBottom="16dp" />
 
@@ -478,16 +476,5 @@
 
         </LinearLayout>
     </ScrollView>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/card_bg"
-        app:menu="@menu/menu_bottom_nav"
-        app:itemIconTint="@color/nav_inactive"
-        app:itemTextColor="@color/nav_inactive"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
