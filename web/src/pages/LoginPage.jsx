@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { GoogleLogin } from '@react-oauth/google';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -25,6 +26,24 @@ const LoginPage = () => {
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Invalid email or password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setLoading(true);
+    try {
+      const response = await axios.post('http://localhost:8080/api/auth/google', {
+        token: credentialResponse.credential,
+      });
+
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data));
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Google login failed');
     } finally {
       setLoading(false);
     }
@@ -99,6 +118,27 @@ const LoginPage = () => {
             {loading ? 'Signing in...' : 'Login'}
           </button>
         </form>
+
+        <div className="relative mt-8 mb-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-100"></div>
+          </div>
+          <div className="relative flex justify-center text-[10px] uppercase tracking-wider font-bold">
+            <span className="px-3 bg-white text-gray-400">Or continue with</span>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google login failed')}
+            useOneTap
+            theme="outline"
+            shape="pill"
+            size="large"
+            text="signin_with"
+          />
+        </div>
 
         <p className="mt-6 text-center text-xs text-gray-500">
           Don't have an account?{' '}

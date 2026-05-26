@@ -1,6 +1,9 @@
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import AddExpense from './pages/AddExpense';
 import History from './pages/History';
@@ -27,6 +30,8 @@ function App() {
         <Route path="/add-expense" element={<PrivateRoute><AddExpense /></PrivateRoute>} />
         <Route path="/history" element={<PrivateRoute><History /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/admin" element={<PrivateRoute><AdminPortal /></PrivateRoute>} />
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
